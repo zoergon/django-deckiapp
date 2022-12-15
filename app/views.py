@@ -2,6 +2,52 @@ from rest_framework import viewsets
 from .models import Sarja, Pakka
 from .serializers import SarjaSerializer, PakkaSerializer
 
+from django.shortcuts import render
+from django.contrib.auth import authenticate, login, logout
+
+def landingview(request):
+    return render(request, 'landingpage.html')
+
+# Loginpage
+def loginview(request):
+    return render (request, "loginpage.html")
+
+
+# Login action
+def login_action(request):
+    user = request.POST['username']
+    passw = request.POST['password']
+    # Löytyykö kyseistä käyttäjää?
+    user = authenticate(username = user, password = passw)
+    #Jos löytyy:
+    if user:
+        # Kirjataan sisään
+        login(request, user)
+        # Tervehdystä varten context
+        context = {'name': user.first_name}
+        # Kutsutaan suoraan landingview.html
+        return render(request,'landingpage.html',context)
+    # Jos ei kyseistä käyttäjää löydy
+    else:
+        return render(request, 'loginerror.html')
+
+
+# Logout action
+def logout_action(request):
+    logout(request)
+    return render(request, 'loginpage.html')
+
+def sarjatlistview(request):
+    sarjatlist = Sarja.objects.all()
+    context = {'sarjat': sarjatlist}
+    return render(request, 'sarjatlist.html', context)
+
+def pakatlistview(request):
+    pakatlist = Pakka.objects.all()
+    sarjatlist = Sarja.objects.all()
+    context = {'pakat': pakatlist, 'sarjat': sarjatlist}
+    return render(request, 'pakatlist.html', context)
+
 '''Ao. metodi osaa tehdä kaikki crud toiminnot ja hakea opettajat:
     -kaikki opettajat: /api/opettajat
     -opettajan id:llä /api/opettajat/id

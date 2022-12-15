@@ -1,0 +1,77 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<h1>Sarjat</h1>
+
+<br />
+<div id="add-div"></div>
+<br />
+
+<h1 style="color: darkviolet">Sarjat</h1>
+
+<button id="add-btn" class="btn btn-success btn-sm" onclick="showaddform()">Lisää uusi sarja</button>
+
+<form method="post" action="/search-suppliers/">
+
+    {%csrf_token %}
+    <input class="card-text" class="card-text" type="text" placeholder="search" name="search">
+
+    <input type="submit" value="Search" class="btn btn-success btn-sm" name="">
+</form>
+
+
+{% for s in sarjat %}
+
+<div class="card" style="width: 50rem;">
+    <div class="card-body">
+        <h4 class="card-title">{{s.nimi}}</h4>
+        <p class="card-text">Sarja: {{s.nimi}} | Julkaisuvuosi: {{s.vuosi}} </p>
+
+        <a href="/edit-supplier-get/{{s.id}}/" class="btn btn-primary">Edit</a>
+        <a href="/confirm-delete-supplier/{{s.id}}/" class="btn btn-danger">Delete</a>
+        <a href="/products-by-supplier/{{s.id}}/" class="btn btn-secondary">{{s.nimi}} Pakat</a>
+
+    </div>
+</div>
+
+{% empty %}
+
+<div class="card" style="width: 50rem;">
+    <div class="card-body">
+        <p class="card-text">Ei sarjoja tietokannassa </p>
+    </div>
+</div>
+
+{%endfor%}
+
+<script>
+
+    let x = `
+    <h2 style="color: lightblue">Lisää sarja</h2>
+    
+    <div class="card" style="width: 20rem;">
+        <div class="card-body">
+            <form method="post" action="/add-sarja/">
+    
+                {% csrf_token %}
+                <input class="card-text" class="card-text" type="text" placeholder="sarjan nimi" name="nimi">
+                <input class="card-text" type="text" placeholder="julkaisuvuosi" name="vuosi">
+                <br/>
+                <input type="submit" value="Confirm" class="btn btn-success btn-sm" name="">
+                <input type="submit" id="hide-btn" class="btn btn-secondary btn-sm" onclick="hideaddform()" value="Cancel" name="">
+            </form>
+        </div>
+    </div>`
+
+    function showaddform() {
+        document.getElementById("add-div").innerHTML = x
+    }
+
+    function hideaddform() {
+        document.getElementById("add-div").innerHTML = ""
+    }
+
+</script>
+
+{% endblock %}

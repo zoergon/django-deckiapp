@@ -7,6 +7,9 @@ class Sarja(models.Model):
     class Meta:
         ordering = ['nimi']
 
+    def __str__(self):
+        return f"{self.nimi} from {self.vuosi}"
+
 class Pakka(models.Model):
     nimi = models.CharField(max_length=100, default='')
     harvinaisuus = models.IntegerField()
@@ -14,3 +17,6 @@ class Pakka(models.Model):
 
     class Meta:
         ordering = ['nimi']
+
+    def __str__(self):
+        return f"{self.nimi} printed in {self.sarja.nimi}"
